@@ -1,0 +1,238 @@
+%
+% This is the LaTeX template file for lecture notes for EE 382C/EE 361C.
+%
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+% This template is based on the template for Prof. Sinclair's CS 270.
+
+\documentclass[twoside]{article}
+\usepackage{graphics}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+%
+% The following commands set up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+   \pagestyle{myheadings}
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{lecnum}{#1}
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {\bf EE 382C/361C: Multicore Computing
+                        \hfill Fall 2016} }
+       \vspace{4mm}
+       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+       \vspace{2mm}
+       \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+      \vspace{2mm}}
+   }
+   \end{center}
+   \markboth{Lecture #1: #2}{Lecture #1: #2}
+   %{\bf Disclaimer}: {\it These notes have not been subjected to the
+   %usual scrutiny reserved for formal publications.  They may be distributed
+   %outside this class only with the permission of the Instructor.}
+   \vspace*{4mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+% Also commands that create a suitable format for the reference list.
+\renewcommand{\cite}[1]{[#1]}
+\def\beginrefs{\begin{list}%
+        {[\arabic{equation}]}{\usecounter{equation}
+         \setlength{\leftmargin}{2.0truecm}\setlength{\labelsep}{0.4truecm}%
+         \setlength{\labelwidth}{1.6truecm}}}
+\def\endrefs{\end{list}}
+\def\bibentry#1{\item[\hbox{[#1]}]}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{SPACE-IN-INCHES}{CAPTION}
+\newcommand{\fig}[3]{
+			\vspace{#2}
+			\begin{center}
+			Figure \thelecnum.#1:~#3
+			\end{center}
+	}
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{10}{September 27}{Vijay Garg}{Prateek Srivastava}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+% **** YOUR NOTES GO HERE:
+
+% Some general latex examples and examples making use of the
+% macros follow.  
+%**** IN GENERAL, BE BRIEF. LONG SCRIBE NOTES, NO MATTER HOW WELL WRITTEN,
+%**** ARE NEVER READ BY ANYBODY.
+\section{Introduction}
+This lecture covers follwing items.
+\begin{itemize}
+\item Project outlines
+\item Merging Puzzle
+\item Sequential Consistency
+\end{itemize}
+
+
+\section{Projects}
+
+Projects need to be done in groups of 2/3. Undergrads should do project with other undergrads and Grads with grads. For undergrads, the project would be to implement and turn in just one plot of the observations. For grads, they need to pick a topic, implement it and possibly improve on it. Topics can be chosen from recent proceedings as well.
+If undergrads choose same topics they can compete among themselves for the performance. Though grading won't depend much on the competition.
+Topics are posted on canvas. A brief overview is present here.
+\begin{itemize}
+\item Mutex algorithms not covered in class can be implemented e.g. colored bakery
+\item Monitors with additional feature like abort.
+\item Parallel work scheduling and work distribution algorithms using for e.g. language CILK.
+\item Concurrent trees, queues and skiplist. No serialization by locking.
+\item Concurrent Hash-tables like Cuckoo Hashing, and Hopscotch Hashing
+\item Poset lattice theory. some part will be covered in class.
+\item Graph shortest path, spanning trees, max flows can be implemented on stampede GPU.
+\item Sorting implement and compare performance
+\item Image processing on GPU, scientific computation like fft and polynomial.Data mining algorithms like K-means.
+\item Text analysis used heavily by Google, pattern matching.
+\item Iphone/Android for this topic need to give exact details on what the app is going to do.
+\item Run model checker on algo and verify correctness
+\item Lamport's Temporal Logic of Actions for specifying and verifying the correctness of concurrent algorithms
+\item Verification of Consistency Conditions
+\end{itemize}
+Please note that the project should contain some references.  
+The naive and obvious solution to All Pairs Shortest Path(APSP) problem is to
+run a Single Source Shortest Path algorithm from each starting vertex
+$v$.  If the graph has arbitrary edge weights, it takes the Bellman-Ford
+algorithm $O(|E||V|^2)$ time to solve APSP.  But there
+are better approaches.
+
+\section{Merge Puzzle contd\ldots}
+\subsection{Problem}
+Merge two sorted arrays of length n to form a sorted array of length 2n
+
+\subsection{Solutions}
+Sequential algorithm was like the merge sort.
+Parallel algorithm computes rank for each element which is the index into the final merged array. Each element computes its rank using its own position and its position in the other array using binary search.
+Following table summarizes the time and work complexity of already discussed solution.
+\begin{table}[h]
+\centering
+\label{my-label}
+\begin{tabular}{|l|l|l|}
+\hline
+           & Time     & Work       \\ \hline
+Sequential & O(n)     & O(n)       \\ \hline
+Parallel   & O(log n) & O(n log n) \\ \hline
+\end{tabular}
+\end{table}
+\subsection{Work optimal parallel solution}
+We would like to reduce the work from \(O(n*logn)\). This can be achieved using cascaded algorithm. Divide the input array in log n groups. The starting element in each group is called the splitter. \\
+No. of splitters = \( O\left(\frac{n}{log n}\right)\)\\
+Fill the splitter in the target array by finding ranks as done in the parallel algorithm.\\
+Find the sublist in $\alpha$ and $\beta$ such that they are in between the splitters.\\
+Number of such lists = \( O\left(\frac{n}{log n}\right)\)\\
+Size of each list = \(Olog n)\)\\
+We know that the \(log n\) size lists can be merged in \(Olog n)\)\\ 
+
+Hence, following table summarizes the steps.
+\begin{table}[h]
+\centering
+\label{my-label1}
+\begin{tabular}{|l|l|l|}
+\hline
+       & Time     & Work \\ \hline
+Step 1 & O(log n) & O(n) \\ \hline
+Step 2 & O(log n) & O(n) \\ \hline
+Total  & O(log n) & O(n) \\ \hline
+\end{tabular}
+\end{table}
+\section{Parallel prefix sum puzzle}
+Given an array find an output array such that each element in output array is sum of input array elements till that index.\\
+e.g. Input   3, 4, 19, 11, 13\\
+$\-$  $\-$ $\-$ $\-$ Output  3, 7, 26, 37, 50\\
+The algorithm is called scan.
+\section{Consistency condition}
+Consider a stack with following operations
+	push(40) push(9) pop (Pop should return 9 not 40) Sequential correctness
+Now consider following situation.
+
+The correctness of output depends on the definition of correct output. r wrote a 2 page paper explaining what it means to be sequential consistent in a multiprocessor environment.
+
+In Java there is an object and method are used to manipulate the object. 
+Thread P f.foo(arg1, agr2) this is an invocation. f is object, foo is method name
+Thread P f.response is the return value.
+
+We define following
+	inv(e) is invocation of e
+	resp(e) is response of e
+	proc(e) is process on which e runs
+	
+History  $(H, <_H)$
+set of operations in real time order.
+
+$e<_Hf$ is resp(e) occurred before inv(f)
+
+e overlaps with f or is concurrent with f
+
+$<{H}$ is irreflexive
+		transitive
+This two conditions imply that it is asymmetric.
+ $(H, <_H)$ is a partial ordered set (poset).
+
+A sequential history is legal if it satisfies sequential specs of the objects.
+
+\section*{References}
+\beginrefs
+\bibentry{AGM97}{\sc N.~Alon}, {\sc Z.~Galil} and {\sc O.~Margalit},
+On the Exponent of the All Pairs Shortest Path Problem,
+{\it Journal of Computer and System Sciences\/}~{\bf 54} (1997),
+pp.~255--262.
+
+\bibentry{F76}{\sc M. L. ~Fredman}, New Bounds on the Complexity of the 
+Shortest Path Problem, {\it SIAM Journal on Computing\/}~{\bf 5} (1976), 
+pp.~83-89.
+\endrefs
+
+
+\end{document}
+
+
+
+
+
