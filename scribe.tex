@@ -11,6 +11,8 @@
 
 \documentclass[twoside]{article}
 \usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{float}
 \setlength{\oddsidemargin}{0.25 in}
 \setlength{\evensidemargin}{-0.25 in}
 \setlength{\topmargin}{-0.6 in}
@@ -111,45 +113,40 @@ This lecture covers following items.
 \begin{itemize}
 \item Project outlines
 \item Merging Puzzle
-\item Sequential Consistency
+\item Consistency conditions
 \end{itemize}
 
 
 \section{Projects}
 
-Projects need to be done in groups of 2/3. Undergrads should do project with other undergrads and Grads with grads. For undergrads, the project would be to implement and turn in just one plot of the observations. For grads, they need to pick a topic, implement it and possibly improve on it. Topics can be chosen from recent proceedings as well.
-If undergrads choose same topics they can compete among themselves for the performance. Though grading won't depend much on the competition.
-Topics are posted on canvas. A brief overview is present here.
+Projects need to be done in groups of 2 or 3. Undergrads should do project with other undergrads while grads with grads. For undergrads, aim would be to implement and turn in just one plot of the observations. For grads, they need to pick a topic, implement it and possibly improve on it. Topics can be chosen from recent conference proceedings as well.\\
+If undergrads choose same topics, they can compete among themselves for the performance. 
+Topics are posted on canvas. A brief overview is present here.\\
 \begin{itemize}
-\item Mutex algorithms not covered in class can be implemented e.g. colored bakery
+\item Mutex algorithms not covered in class can be implemented e.g. colored bakery.
 \item Monitors with additional feature like abort.
-\item Parallel work scheduling and work distribution algorithms using for e.g. language CILK.
-\item Concurrent trees, queues and skiplist. No serialization by locking.
-\item Concurrent Hash-tables like Cuckoo Hashing, and Hopscotch Hashing
-\item Poset lattice theory. some part will be covered in class.
-\item Graph shortest path, spanning trees, max flows can be implemented on stampede GPU.
-\item Sorting implement and compare performance
-\item Image processing on GPU, scientific computation like fft and polynomial.Data mining algorithms like K-means.
+\item Parallel work scheduling and work distribution algorithms using some language e.g. language CILK.
+\item Concurrent trees, queues and skiplist. Avoids serialization by locking.
+\item Concurrent Hash-tables like Cuckoo Hashing, and Hopscotch Hashing.
+\item Poset, lattice theory. some part will be covered in class.
+\item Graph shortest path, spanning trees, max flows can be implemented on stampede on GPU.
+\item Implement sorting and compare performance.
+\item Image processing on GPU, scientific computation like fft and polynomial. Data mining algorithms like K-means.
 \item Text analysis used heavily by Google, pattern matching.
 \item Iphone/Android for this topic need to give exact details on what the app is going to do.
-\item Run model checker on algo and verify correctness
-\item Lamport's Temporal Logic of Actions for specifying and verifying the correctness of concurrent algorithms
-\item Verification of Consistency Conditions
+\item Run model checker on algorithm and verify correctness.
+\item Lamport's Temporal Logic of Actions for specifying and verifying the correctness of concurrent algorithms.
+\item Verification of consistency conditions.
 \end{itemize}
-Please note that the project should contain some references.  
-The naive and obvious solution to All Pairs Shortest Path(APSP) problem is to
-run a Single Source Shortest Path algorithm from each starting vertex
-$v$.  If the graph has arbitrary edge weights, it takes the Bellman-Ford
-algorithm $O(|E||V|^2)$ time to solve APSP.  But there
-are better approaches.
+The project should contain some references.  
 
 \section{Merge Puzzle contd\ldots}
 \subsection{Problem}
-Merge two sorted arrays of length n to form a sorted array of length 2n
+Merge two sorted arrays of length n to form a sorted array of length 2n.
 
 \subsection{Solutions}
-Sequential algorithm was like the merge sort.
-Parallel algorithm computes rank for each element which is the index into the final merged array. Each element computes its rank using its own position and its position in the other array using binary search.
+(a) Sequential algorithm was like the merge sort.\\
+(b) Parallel algorithm computes rank for each element which is the index into the final merged array. Each element computes its rank, using its own position and its position in the other array using binary search.\\
 Following table summarizes the time and work complexity of already discussed solution.
 \begin{table}[h]
 \centering
@@ -162,15 +159,21 @@ Parallel   & O(log n) & O(n log n) \\ \hline
 \end{tabular}
 \end{table}
 \subsection{Work optimal parallel solution}
-We would like to reduce the work from \(O(n*logn)\). This can be achieved using cascaded algorithm. Divide the input array in log n groups. The starting element in each group is called the splitter. \\
+We would like to reduce the work from \(O(n*logn)\). This can be achieved using cascaded algorithm.\\ Divide the input array in log n groups. The starting element in each group is called the splitter.\\
 No. of splitters = \( O\left(\frac{n}{log n}\right)\)\\
-Fill the splitter in the target array by finding ranks as done in the parallel algorithm.\\
-Find the sublist in $\alpha$ and $\beta$ such that they are in between the splitters.\\
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=0.250\textheight, width=0.750\linewidth]{1.PNG} 
+  \caption{Merging Sorted Arrays}
+  \label{fig:1}
+\end{figure}
+Fill the splitter in the target array by finding ranks as done in the parallel algorithm as shown in the figure\\
+Find the sublist in first list say, $\alpha$ and second list say, $\beta$ such that they are in between the splitters.\\
 Number of such lists = \( O\left(\frac{n}{log n}\right)\)\\
 Size of each list = \(Olog n)\)\\
-We know that the \(log n\) size lists can be merged in \(Olog n)\)\\ 
+We know that the \(log n\) size lists can be merged in \(Olog n)\) using the sequential algorithm.\\ 
 
-Hence, following table summarizes the steps.
+Following table summarizes the steps.
 \begin{table}[h]
 \centering
 \label{my-label1}
@@ -182,63 +185,72 @@ Step 2 & O(log n) & O(n) \\ \hline
 Total  & O(log n) & O(n) \\ \hline
 \end{tabular}
 \end{table}
+Hence, the solution is work as well as time optimal. Although, there are solutions optimal then this one as well.
 \section{Parallel prefix sum puzzle}
 Given an array find an output array such that each element in output array is sum of input array elements till that index.\\
 e.g. Input   3, 4, 19, 11, 13\\
 $\-$  $\-$ $\-$ $\-$ Output  3, 7, 26, 37, 50\\
 The algorithm is called scan.
 \section{Consistency condition}
-Consider a stack with following operations
-	push(40) push(9) pop (Pop should return 9 not 40) Sequential correctness
-Now consider following situation.
-
-The correctness of output depends on the definition of correct output. Lamport wrote a 2 page paper explaining what it means to be sequential consistent in a multiprocessor environment.
+Consider a stack with following operations\\
+$\-$  $\-$ $\-$ $\-$push(40) push(9) pop (Pop should return 9 not 40)\\This is sequential correctness\\
+Now consider following situation.\\
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=0.2\textheight, width=0.6\linewidth]{2.PNG} 
+  \label{fig:2}
+\end{figure}
+The correctness of output depends on the definition of correct output. Lamport wrote a 2 page paper explaining what it means to be sequentially consistent in a multiprocessor environment.
 
 \subsection{Notations}
 A method call is split into two events
 \begin{list}{*}{•}
-\item {\em Invocation} method name + args eg f.foo(arg1, arg2)
+\item {\em Invocation} method name + args e.g. f.foo(arg1, arg2)
 \item {\em Response} result or exception
 \end{list}
-P f.foo(arg1, arg2)\\
-this is an invocation of object f on thread P\\
+
+Consider, P f.foo(arg1, arg2)\\
+This is an invocation of object f on thread P\\
 foo is method name \\
-arg1. arg2 are arguments\\
-Thread P f.response \\
-This is the return value.\\
+arg1, arg2 are arguments\\
+Consider, P f.response \\
+This is the return value, for object f on thread P\\
 
-We define following
-	inv(e) is invocation of e
-	resp(e) is response of e
-	proc(e) is process on which e runs
-{\em History\\}
-A sequence of invocations and responses.	
-History  $(H, <_H)$ is set of operations in real time order.
+We define following\\
+$\-$  $\-$ $\-$ inv(e) is invocation of e\\
+$\-$  $\-$ $\-$ resp(e) is response of e\\
+$\-$  $\-$ $\-$ proc(e) is process on which e runs\\
+\subsection{History}
+A sequence of invocations and responses constitutes history.\\	
+History  $(H, <_H)$ is set of operations in real time order.\\
+The relation $e <_H f$ holds, if resp(e) occurred before inv(f)\\
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=0.20\textheight, width=0.80\linewidth]{3.PNG} 
+  \label{fig:3}
+\end{figure}
+In first case, response of e occurs before invocation of f. In second case, 
+e overlaps with f or is concurrent with f. There is no particular order\\
 
-$e<_Hf$ if resp(e) occurred before inv(f)\\
-
-e overlaps with f or is concurrent with f\\
-
-$<{H}$ is irreflexive (each element does not satisfy the relation with itself)\\ 
-		transitive (if relation applies between successive members of a sequence, it must also apply between any two members taken in order)\\
-This two conditions imply that it is asymmetric.\\
-Thus, $(H, <_H)$ is a partial ordered set (poset).
-
-A sequential history is legal if it satisfies sequential specs of the objects.
-
+The relation $<_H$ is\\ (a) irreflexive (each element does not satisfy the relation with itself)\\ 
+		(b)	transitive (if relation applies between successive members of a sequence, it must also apply between any two members taken in order)\\
+This two conditions imply that the relation is asymmetric.\\
+Since the relation $(H, <_H)$ is irreflexive and transitive, $(H, <_H)$ is a partial ordered set (poset).\\
+\subsection{Process Order}
+$e < f$ is in process order if 
+\begin{list}{•}{•}
+\item proc(e) = proc(f)
+\item resp(e) occurred before inv(f)
+\end{list}
+\subsection{Total order}
+A poset $(H, <_H)$ is a total order if for all distinct x,y $(<_X)$, satisfies $(x<y)$ or $(y<x)$\\ 
+\subsection{Sequential History}
+A history $(H, <_H)$ is sequential if $(<_H)$ is a total order.\\
+A sequential history is legal if it satisfies sequential specs of the objects.\\
 \section*{References}
 \beginrefs
-\bibentry{AGM97}{\sc N.~Alon}, {\sc Z.~Galil} and {\sc O.~Margalit},
-On the Exponent of the All Pairs Shortest Path Problem,
-{\it Journal of Computer and System Sciences\/}~{\bf 54} (1997),
-pp.~255--262.
-
-\bibentry{F76}{\sc M. L. ~Fredman}, New Bounds on the Complexity of the 
-Shortest Path Problem, {\it SIAM Journal on Computing\/}~{\bf 5} (1976), 
-pp.~83-89.
+\bibentry{1}{\sc V. K. Garg}, Introduction to Multicore Computing
 \endrefs
-
-
 \end{document}
 
 
